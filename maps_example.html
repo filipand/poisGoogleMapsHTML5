@@ -34,14 +34,11 @@ body {
 			zoom : 7,
 			mapTypeId : google.maps.MapTypeId.ROADMAP
 		};
+		
 		map = new google.maps.Map(document.getElementById("map_canvas"),
 				mapOptions);
 		
-		
-		
-
-		
-		var layer = new google.maps.visualization.MapsEngineLayer({
+/*		var layer = new google.maps.visualization.MapsEngineLayer({
 		    mapId: '12406476794211073348-05414812628978701557',
 		    layerKey: 'layer_00001', 
 		    map: map
@@ -52,6 +49,8 @@ body {
 		    layerKey: 'layer_00002', 
 		    map: map
 		  });
+		
+*/
 		
 
 		loadFromJSON();
@@ -92,6 +91,7 @@ body {
 		
 		myLocation = new google.maps.LatLng(position.coords.latitude,
 				position.coords.longitude);
+		
 
 	    myLocationMarker = new google.maps.Marker({
 			position : myLocation,
@@ -157,7 +157,8 @@ body {
 	src="http://code.jquery.com/jquery-latest.min.js"></script>
 </head>
 <body onload="initialize()">
-	<div id="map_canvas"></div>
+	<iframe id="map_canvas" name="map_canvas" src="https://mapsengine.google.com/12406476794211073348-05414812628978701557-4/widget/in_iframe" width="100%" height="100%"></iframe>
+	
 	
 </body>
 </html>
