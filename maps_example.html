@@ -26,6 +26,7 @@ body {
 	var watchId = null;
 
 	var myLocation = null;
+	var myLocationMarker = null;
 
 	function initialize() {
 		var mapOptions = {
@@ -73,10 +74,15 @@ body {
 	}
 
 	function showPosition(position) {
+		
+		if(myLocationMarker != null){
+			myLocationMarker.setMap(null);	
+		}
+		
 		myLocation = new google.maps.LatLng(position.coords.latitude,
 				position.coords.longitude);
 
-		var marker = new google.maps.Marker({
+	    myLocationMarker = new google.maps.Marker({
 			position : myLocation,
 			map : map,
 			icon : 'mylocation_icon.png'
@@ -86,9 +92,9 @@ body {
 			content : 'Your location    '
 		});
 
-		google.maps.event.addListener(marker, 'click', function() {
-			map.setCenter(marker.getPosition());
-			infowindow.open(map, marker);
+		google.maps.event.addListener(myLocationMarker, 'click', function() {
+			map.setCenter(myLocationMarker.getPosition());
+			infowindow.open(map, myLocationMarker);
 		});
 
 	}
