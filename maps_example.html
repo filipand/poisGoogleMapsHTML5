@@ -36,12 +36,18 @@ body {
 		};
 		map = new google.maps.Map(document.getElementById("map_canvas"),
 				mapOptions);
+		
+		
+		
 
-		var myMapsEngineLayer = new google.maps.KmlLayer(
-				{
-					url : 'http://mapsengine.google.com/map/kml?mid=zgt_p2acn1C0.kWlhtgMii_1A'
-				});
-		myMapsEngineLayer.setMap(map);
+		
+		var layer = new google.maps.visualization.MapsEngineLayer({
+		    mapId: '12406476794211073348-05414812628978701557',
+		    layerKey: 'layer_00001',
+		    map: map
+		  });
+		
+		
 
 		loadFromJSON();
 
@@ -147,5 +153,6 @@ body {
 </head>
 <body onload="initialize()">
 	<div id="map_canvas"></div>
+	
 </body>
 </html>
