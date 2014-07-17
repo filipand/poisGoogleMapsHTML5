@@ -8,6 +8,14 @@
 
 </script>
 <script type="text/javascript">
+
+
+//TODO search box searches objects only after click on sugested result
+//TODO if my location is unavailable, ask the user to choose start location
+//TODO zoom or move in travelling mode
+//TODO add html code to google maps engine infoview
+//TODO v2: display a link with redirect to google maps
+
 var map;
 
 var directionsDisplay;
@@ -24,9 +32,9 @@ var travelling = false;
 
 function initialize() {
 
-	
-	travelling = false;
-	
+
+    travelling = false;
+
     directionsDisplay = new google.maps.DirectionsRenderer();
 
 
@@ -59,26 +67,118 @@ function initialize() {
     getLocation();
 
     prepareSearchBox();
+
+    if (myLocationMarker != null) {
+        map.setCenter(myLocationMarker.getPosition());
+    }
+
+
+}
+
+function getLocation() {
+    startWatch();
+}
+
+function getDistance(start, destination) {
+    return google.maps.geometry.spherical.computeDistanceBetween(start, destination);
+}
+
+function startWatch() {
+    if (navigator.geolocation) {
+        var optn = {
+            enableHighAccuracy: true,
+            timeout: Infinity,
+            maximumAge: 0
+        };
+        watchId = navigator.geolocation.watchPosition(showPosition,
+                showError, optn);
+    } else {
+        alert('Geolocation is not supported in your browser');
+    }
+}
+function stopWatch() {
+    if (watchId) {
+        navigator.geolocation.clearWatch(watchId);
+        watchId = null;
+    }
+}
+
+function showPosition(position) {
+
+    if (myLocationMarker != null) {
+        myLocationMarker.setMap(null);
+    }
+
+    myLocation = new google.maps.LatLng(position.coords.latitude,
+            position.coords.longitude);
+
+    myLocationMarker = new google.maps.Marker({
+        position: myLocation,
+        map: map,
+        icon: 'mylocation_icon.png'
+    });
+
+    var infowindow = new google.maps.InfoWindow({
+        content: 'Your location    '
+    });
+
+    if (travelling == true) {
+        calcRoute();
+    }
+
+
+    google.maps.event.addListener(myLocationMarker, 'click', function () {
+        map.setCenter(myLocationMarker.getPosition());
+        infowindow.open(map, myLocationMarker);
+    });
+
+
 }
 
 
 function calcRoute() {
-	
-	travelling = true;
-	  var start = myLocation;
-	  
-	  var end = destination;
-	  var request = {
-	    origin: start,
-	    destination: end,
-	    travelMode: google.maps.TravelMode.DRIVING
-	  };
-	  directionsService.route(request, function(response, status) {
-	    if (status == google.maps.DirectionsStatus.OK) {
-	      directionsDisplay.setDirections(response);
-	    }
-	  });
-	}
+
+    if (travelling == false) {
+        showDirectionsPanel();
+        directionsDisplay.setMap(map);
+    }
+
+    travelling = true;
+    var start = myLocation;
+
+    var end = destination;
+    var request = {
+        origin: start,
+        destination: end,
+        travelMode: google.maps.TravelMode.DRIVING
+    };
+    directionsService.route(request, function (response, status) {
+        if (status == google.maps.DirectionsStatus.OK) {
+            directionsDisplay.setDirections(response);
+
+            if (response.routes[0].legs[0].distance.value < 5) {
+                travelling = false;
+                directionsDisplay.setMap();
+                hideDirectionsPanel();
+            }
+
+
+        }
+    });
+
+
+}
+
+
+function showDirectionsPanel() {
+    document.getElementById("map_canvas").style.marginRight = "400px";
+    document.getElementById("map_canvas").style.width = "72%";
+}
+
+function hideDirectionsPanel() {
+    document.getElementById("map_canvas").style.marginRight = "0px";
+    document.getElementById("map_canvas").style.width = "100%";
+}
 
 function prepareSearchBox() {
 
@@ -139,78 +239,20 @@ function prepareSearchBox() {
                                 && place.address_components[2].short_name || '') ]
                             .join(' ');
                 }
-                
+
                 var infowindowContent = '<div><strong>' + place.name + '</strong><br>' + address + "</br> <button onclick=\"calcRoute()\">Navigate</button>";
-                
+
                 destination = marker.getPosition();
 
                 infowindow.setContent(infowindowContent);
                 infowindow.open(map, marker);
-                
+
                 google.maps.event.addListener(marker, 'click', function () {
                     infowindow.open(map, marker);
-                    
+
                 });
-                
+
             });
-
-}
-
-function getLocation() {
-    startWatch();
-}
-
-function startWatch() {
-    if (navigator.geolocation) {
-        var optn = {
-            enableHighAccuracy: true,
-            timeout: Infinity,
-            maximumAge: 0
-        };
-        watchId = navigator.geolocation.watchPosition(showPosition,
-                showError, optn);
-    } else {
-        alert('Geolocation is not supported in your browser');
-    }
-}
-function stopWatch() {
-    if (watchId) {
-        navigator.geolocation.clearWatch(watchId);
-        watchId = null;
-    }
-}
-
-function showPosition(position) {
-
-    if (myLocationMarker != null) {
-        myLocationMarker.setMap(null);
-    }
-
-    myLocation = new google.maps.LatLng(position.coords.latitude,
-            position.coords.longitude);
-
-    myLocationMarker = new google.maps.Marker({
-        position: myLocation,
-        map: map,
-        icon: 'mylocation_icon.png'
-    });
-
-    var infowindow = new google.maps.InfoWindow({
-        content: 'Your location    '
-    });
-    
-    if(travelling == true) {
-    	calcRoute();
-    }
-    
-    
-    google.maps.event.addListener(myLocationMarker, 'click', function () {
-        map.setCenter(myLocationMarker.getPosition());
-        infowindow.open(map, myLocationMarker);
-    });
-    
-    
-    
 
 }
 

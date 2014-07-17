@@ -8,21 +8,17 @@ body {
 	padding: 0
 }
 
-#map_canvas {
-	height: 100%
+#directions-panel {
+	height: 100%;
+	float: right;
+	width: 390px;
+	overflow: auto;
 }
 
-#directions-panel {
-        height: 100%;
-        float: right;
-        width: 390px;
-        overflow: auto;
-      }
-
-      #map-canvas {
-        margin-right: 400px;
-      }
-
+#map_canvas {
+	height: 100%;
+	width: 100%;
+}
 
 .controls {
 	margin-top: 16px;
