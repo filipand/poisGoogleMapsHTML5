@@ -6,23 +6,96 @@
 <html>
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<script src="https://maps.googleapis.com/maps/api/js"></script>
+
+<script type="text/javascript"
+	src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAk9XHSmk_a3AJ5qf4ryv4uFJn3iBoeIpI&sensor=true&libraries=visualization,places">
+	
+</script>
+<script type="text/javascript">
+	var watchId;
+	var map;
+	var myLocation;
+	var myLocationMarker = null;
+
+	function initialize() {
+		var mapOptions = {
+			center : new google.maps.LatLng(58, 16),
+			zoom : 7,
+			mapTypeId : google.maps.MapTypeId.ROADMAP
+		};
+
+		map = map = new google.maps.Map(document
+				.getElementById("map_canvas"), mapOptions);
+
+		if (navigator.geolocation) {
+			var optn = {
+				enableHighAccuracy : true,
+				timeout : Infinity,
+				maximumAge : 0
+			};
+			watchId = navigator.geolocation.watchPosition(showPosition,
+					showError, optn);
+		} else {
+			alert('Geolocation is not supported in your browser');
+		}
+
+	}
+
+	function showPosition(position) {
+
+		if (myLocationMarker != null) {
+			myLocationMarker.setMap(null);
+		}
+
+		myLocation = new google.maps.LatLng(position.coords.latitude,
+				position.coords.longitude);
+
+		myLocationMarker = new google.maps.Marker({
+			position : myLocation,
+			map : map
+		});
+
+	}
+
+	function showError(error) {
+		switch (error.code) {
+		case error.PERMISSION_DENIED:
+			alert("User denied the request for Geolocation.");
+			break;
+		case error.POSITION_UNAVAILABLE:
+			alert("Location information is unavailable.");
+			break;
+		case error.TIMEOUT:
+			alert("The request to get user location timed out.");
+			break;
+		case error.UNKNOWN_ERROR:
+			alert("An unknown error occurred.");
+			break;
+		}
+	}
+</script>
+
 </head>
-<body>
+<body onload="initialize()">
+
+	
 
 
 
-<!--	<iframe frameborder="0" height="480" marginheight="0" marginwidth="0"
+	<!--	<iframe frameborder="0" height="480" marginheight="0" marginwidth="0"
 		scrolling="no"
 		src="http://maps.google.co.uk/maps/ms?vpsrc=6&amp;ctz=-60&amp;ie=UTF8&amp;msa=0&amp;msid=214351609948700465489.0004af71aadc793c63dfa&amp;t=m&amp;ll=51.009435,-1.760216&amp;spn=0.103688,0.219727&amp;z=12&amp;output=embed"
 		width="640"></iframe>
+
 -->
 
-
-
 	<iframe
+		id="map_canvas" name="map_canvas"
 		src="http://maps.google.com/maps/ms?ie=UTF8&amp;msa=0&amp;msid=205427380680792264646.0004fe643d107ef29299a&amp;output=embed"
 		width="100%" height="600px"></iframe>
+		
+
+
 
 
 </body>

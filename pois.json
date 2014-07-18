@@ -16,5 +16,12 @@
     "lat": 55.7,
     "lng": 12.6,
     "description": "Copenhagen is the capital of Denmark and its most populous city, with a metropolitan population of 1,931,467 (as of 1 January 2012)."
+  },
+  {
+    "title": "Bratislava",
+    "lat": 48.7,
+    "lng": 17.6,
+    "description": "Bratislava capital city."
   }
+  
 ]

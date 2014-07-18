@@ -18,6 +18,8 @@
 
 var map;
 
+var destination;
+
 var directionsDisplay;
 var directionsService = new google.maps.DirectionsService();
 
@@ -26,7 +28,7 @@ var watchId = null;
 var myLocation = null;
 var myLocationMarker = null;
 
-var destination;
+var selectedMarker = null;
 
 var travelling = false;
 
@@ -77,10 +79,6 @@ function initialize() {
 
 function getLocation() {
     startWatch();
-}
-
-function getDistance(start, destination) {
-    return google.maps.geometry.spherical.computeDistanceBetween(start, destination);
 }
 
 function startWatch() {
@@ -135,18 +133,30 @@ function showPosition(position) {
 
 }
 
+function navigateButtonClicked() {
+	
+	if(selectedMarker != null){
+		destination = selectedMarker.getPosition();
+    	selectedMarker = null;
+    }
+	
+	calcRoute();
+}
+
 
 function calcRoute() {
 
-    if (travelling == false) {
+	var start = myLocation;
+
+    var end = destination;
+	
+	if (travelling == false) {
         showDirectionsPanel();
         directionsDisplay.setMap(map);
     }
 
     travelling = true;
-    var start = myLocation;
-
-    var end = destination;
+    
     var request = {
         origin: start,
         destination: end,
@@ -240,15 +250,14 @@ function prepareSearchBox() {
                             .join(' ');
                 }
 
-                var infowindowContent = '<div><strong>' + place.name + '</strong><br>' + address + "</br> <button onclick=\"calcRoute()\">Navigate</button>";
-
-                destination = marker.getPosition();
+                var infowindowContent = '<div><strong>' + place.name + '</strong><br>' + address + "</br> <button onclick=\"navigateButtonClicked()\">Navigate</button>";
 
                 infowindow.setContent(infowindowContent);
-                infowindow.open(map, marker);
 
                 google.maps.event.addListener(marker, 'click', function () {
-                    infowindow.open(map, marker);
+                	map.setCenter(marker.getPosition());
+                	infowindow.open(map, marker);
+                    selectedMarker = marker;
 
                 });
 
@@ -287,10 +296,11 @@ function loadFromJSON() {
 
             var infowindow = new google.maps.InfoWindow({
                 content: '<h2>' + data.title + '</h2> <br/>'
-                        + data.description
+                        + data.description + "</br> <button onclick=\"navigateButtonClicked()\">Navigate</button>"
             });
 
             google.maps.event.addListener(marker, 'click', function () {
+            	selectedMarker = marker;
                 map.setCenter(marker.getPosition());
                 infowindow.open(map, marker);
             });
@@ -303,6 +313,8 @@ function loadFromJSON() {
         src="http://code.jquery.com/jquery-latest.min.js"></script>
 </head>
 <body onload="initialize()">
+
+
 <input id="pac-input" class="controls" type="text"
        placeholder="Search Box"/>
 
