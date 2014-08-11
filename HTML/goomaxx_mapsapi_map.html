@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<style type="text/css">
+html {
+	height: 100%
+}
+
+body {
+	height: 100%;
+	margin: 0;
+	padding: 0
+}
+
+#map-canvas {
+	height: 100%
+}
+</style>
+<script type="text/javascript"
+	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAk9XHSmk_a3AJ5qf4ryv4uFJn3iBoeIpI&libraries=visualization">
+	
+</script>
+
+<script src="jquery.js"></script>
+
+<script type="text/javascript">
+
+	var map;
+	var myLocation = null;
+	var myLocationMarker = null;
+	var watchId = null;
+	var map_id;
+	
+	var latitude = '';
+	var longitude = '';
+	
+	function initialize() {
+		var mapOptions = {
+			center : new google.maps.LatLng(48, 17),
+			zoom : 5
+		};
+		map = new google.maps.Map(document.getElementById("map-canvas"),
+				mapOptions);
+		
+		localizeMap();
+		
+		
+		var mapsEngineLayer = new google.maps.visualization.MapsEngineLayer({
+		    layerId: map_id});
+		
+		mapsEngineLayer.setMap(map);
+		
+		getLocation();
+		
+		initializeGetDirections();
+		
+
+		
+		
+	}
+	
+	
+	function getLocation() {
+
+		startWatch();    
+	    
+	}
+
+	function startWatch() {
+	    if (navigator.geolocation) {
+	        var optn = {
+	            enableHighAccuracy: true,
+	            timeout: 10000,
+	            maximumAge: 5000
+	        };
+	        watchId = navigator.geolocation.watchPosition(showPosition,
+	                showError, optn);
+	    } else {
+	        alert('Geolocation is not supported in your browser');
+	    }
+	}
+	function stopWatch() {
+	    if (watchId) {
+	        navigator.geolocation.clearWatch(watchId);
+	        watchId = null;
+	    }
+	}
+
+	function showPosition(position) {
+		
+		myLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+		
+		latitude = position.coords.latitude;
+		longitude = position.coords.longitude;
+		
+		if(myLocationMarker == null){
+			map.setCenter(myLocation);
+			map.setZoom(17);
+		}
+
+	    if (myLocationMarker != null) {
+	        myLocationMarker.setMap(null);
+	    }
+	    
+
+	    myLocationMarker = new google.maps.Marker({
+	        position: myLocation,
+	        map: map,
+	        icon: 'mylocation_icon.png'
+	    });
+
+
+	}
+	
+	function initializeGetDirections(){
+		
+		var timer = setInterval(function(){
+			
+			jQuery('a[href*="{lati}"]').each(function(){
+				if (this._repl) return false;
+				var href = $(this).attr('href').replace('{lati}', latitude+',').replace('{long}', longitude);
+				$(this).attr('href', href);
+				this._repl = true;
+			});
+		}, 300);
+
+	}
+
+	function showError(error) {
+	    switch (error.code) {
+	        case error.PERMISSION_DENIED:
+	            alert("User denied the request for Geolocation.");
+	            break;
+	        case error.POSITION_UNAVAILABLE:
+	            alert("Location information is unavailable.");
+	            break;
+	        case error.TIMEOUT:
+	            alert("The request to get user location timed out.");
+	            break;
+	        case error.UNKNOWN_ERROR:
+	            alert("An unknown error occurred.");
+	            break;
+	    }
+	}
+	
+	function localizeMap(){
+		
+		
+		var userLang = navigator.language || navigator.userLanguage;
+		
+		var shortUserLang = userLang.substring(0,2); 
+		
+		
+		if(userLang.localeCompare('en-GB') == 0){
+			<!-- english -->
+			 
+			map_id = '12406476794211073348-13464369061086462890';
+		}
+		
+		else if(userLang.localeCompare('de-DE') == 0){
+			<!-- german -->
+			map_id = '12406476794211073348-17643117795501624396';
+		}
+
+		else if(userLang.localeCompare('es-ES') == 0){
+			<!-- spanish -->
+			map_id = '12406476794211073348-04617895392534889421';
+
+		}
+		else if(shortUserLang.localeCompare('en') == 0){
+			<!-- english -->
+			map_id = '12406476794211073348-13464369061086462890';
+		}
+		else if(shortUserLang.localeCompare('de') == 0){
+			<!-- german -->
+			map_id = '12406476794211073348-17643117795501624396';
+		}
+		else if(shortUserLang.localeCompare('es') == 0){
+			<!-- spanish -->
+			map_id = '12406476794211073348-04617895392534889421';
+		}
+		else{
+			<!-- default language = english-->
+			map_id = '12406476794211073348-13464369061086462890';
+		}
+		
+		
+	}
+	
+// 	$(document).ready(function(){
+// 		var timer = setInterval(function(){
+			
+// 			jQuery('a[href*="{lati}"]').each(function(){
+// 				if (this._repl) return false;
+// 				var href = $(this).attr('href').replace('{lati}', myLocation.latitude).replace('{long}', myLocation.longitude);
+// 				console.log('>> '+href);
+// 				$(this).attr('href', href);
+// 				this._repl = true;
+// 			});
+// 		}, 300);
+// 	});
+	
+	google.maps.event.addDomListener(window, 'load', initialize);
+</script>
+</head>
+<body>
+	<div id="map-canvas" ></div>
+</body>
+</html>

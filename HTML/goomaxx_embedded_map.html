@@ -3,6 +3,11 @@
 	<head>
 	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 	
+	<style type="text/css">
+      html { height: 100% }
+      body { height: 98%; margin: 0; padding: 0 }
+    </style>
+	
 	<script type="text/javascript"
 		src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAk9XHSmk_a3AJ5qf4ryv4uFJn3iBoeIpI&sensor=true&libraries=visualization,places">
 		
@@ -59,16 +64,13 @@
 			
 			var shortUserLang = userLang.substring(0,2); 
 			
-			var windowHeight = window.innerHeight || document.body.clientHeight;
-			windowHeight = windowHeight - 30;
-			
 			
 			if(userLang.localeCompare('en-GB') == 0){
 				<!-- english -->
 				$("#map")
 				.html(
 						"<iframe id=\"map_frame\" " 
-						+ "width=\"100%\" height=\""+ windowHeight +"px\" frameborder=\"0\" scrolling=\"no\" marginheight=\"0\" marginwidth=\"0\" " 
+						+ "width=\"100%\" height=\"100%\" frameborder=\"0\" scrolling=\"no\" marginheight=\"0\" marginwidth=\"0\" " 
 						+ "src=\"https://www.google.sk/maps?f=q&amp;source=s_q&amp;hl=sk&amp;geocode=&amp;q=https:%2F%2Fwww.google.sk%2Fmaps%2Fms%3Fdg%3Dfeature%26ie%3DUTF8%26msa%3D0%26output%3Dkml%26msid%3D205427380680792264646.0004ff65776796e8329c3&amp;"
 						+ "aq=&amp;sll=48.201337,16.414948&amp;sspn=0.259035,0.676346&amp;ie=UTF8&amp;ll="
 						+  lat +","+ lon +"&amp;spn=0.199536,0.399983&amp;t=m&amp;" 
@@ -81,7 +83,7 @@
 				$("#map")
 				.html(
 						"<iframe id=\"map_frame\" " 
-						+ "width=\"100%\" height=\""+ windowHeight +"px\" frameborder=\"0\" scrolling=\"no\" marginheight=\"0\" marginwidth=\"0\" " 
+						+ "width=\"100%\" height=\"100%\" frameborder=\"0\" scrolling=\"no\" marginheight=\"0\" marginwidth=\"0\" " 
 						+ "src=\"https://www.google.sk/maps?f=q&amp;source=s_q&amp;hl=sk&amp;geocode=&amp;q=https:%2F%2Fwww.google.sk%2Fmaps%2Fms%3Fdg%3Dfeature%26ie%3DUTF8%26msa%3D0%26output%3Dkml%26msid%3D205427380680792264646.0004ff657b238390d0bc3&amp;"
 						+ "aq=&amp;sll=48.201337,16.414948&amp;sspn=0.259035,0.676346&amp;ie=UTF8&amp;ll="
 						+  lat +","+ lon +"&amp;spn=0.199536,0.399983&amp;t=m&amp;" 
@@ -93,7 +95,7 @@
 				$("#map")
 				.html(
 						"<iframe id=\"map_frame\" " 
-						+ "width=\"100%\" height=\""+ windowHeight +"px\" frameborder=\"0\" scrolling=\"no\" marginheight=\"0\" marginwidth=\"0\" " 
+						+ "width=\"100%\" height=\"100%\" frameborder=\"0\" scrolling=\"no\" marginheight=\"0\" marginwidth=\"0\" " 
 						+ "src=\"https://www.google.sk/maps?f=q&amp;source=s_q&amp;hl=sk&amp;geocode=&amp;q=https:%2F%2Fwww.google.sk%2Fmaps%2Fms%3Fdg%3Dfeature%26ie%3DUTF8%26msa%3D0%26output%3Dkml%26msid%3D205427380680792264646.0004ff657dd83346ccac2&amp;"
 						+ "aq=&amp;sll=48.201337,16.414948&amp;sspn=0.259035,0.676346&amp;ie=UTF8&amp;ll="
 						+  lat +","+ lon +"&amp;spn=0.199536,0.399983&amp;t=m&amp;" 
@@ -105,7 +107,7 @@
 				$("#map")
 				.html(
 						"<iframe id=\"map_frame\" " 
-						+ "width=\"100%\" height=\""+ windowHeight +"px\" frameborder=\"0\" scrolling=\"no\" marginheight=\"0\" marginwidth=\"0\" " 
+						+ "width=\"100%\" height=\"100%\" frameborder=\"0\" scrolling=\"no\" marginheight=\"0\" marginwidth=\"0\" " 
 						+ "src=\"https://www.google.sk/maps?f=q&amp;source=s_q&amp;hl=sk&amp;geocode=&amp;q=https:%2F%2Fwww.google.sk%2Fmaps%2Fms%3Fdg%3Dfeature%26ie%3DUTF8%26msa%3D0%26output%3Dkml%26msid%3D205427380680792264646.0004ff65776796e8329c3&amp;"
 						+ "aq=&amp;sll=48.201337,16.414948&amp;sspn=0.259035,0.676346&amp;ie=UTF8&amp;ll="
 						+  lat +","+ lon +"&amp;spn=0.199536,0.399983&amp;t=m&amp;" 
@@ -116,7 +118,7 @@
 				$("#map")
 				.html(
 						"<iframe id=\"map_frame\" " 
-						+ "width=\"100%\" height=\""+ windowHeight +"px\" frameborder=\"0\" scrolling=\"no\" marginheight=\"0\" marginwidth=\"0\" " 
+						+ "width=\"100%\" height=\"100%\" frameborder=\"0\" scrolling=\"no\" marginheight=\"0\" marginwidth=\"0\" " 
 						+ "src=\"https://www.google.sk/maps?f=q&amp;source=s_q&amp;hl=sk&amp;geocode=&amp;q=https:%2F%2Fwww.google.sk%2Fmaps%2Fms%3Fdg%3Dfeature%26ie%3DUTF8%26msa%3D0%26output%3Dkml%26msid%3D205427380680792264646.0004ff657b238390d0bc3&amp;"
 						+ "aq=&amp;sll=48.201337,16.414948&amp;sspn=0.259035,0.676346&amp;ie=UTF8&amp;ll="
 						+  lat +","+ lon +"&amp;spn=0.199536,0.399983&amp;t=m&amp;" 
@@ -127,7 +129,7 @@
 				$("#map")
 				.html(
 						"<iframe id=\"map_frame\" " 
-						+ "width=\"100%\" height=\""+ windowHeight +"px\" frameborder=\"0\" scrolling=\"no\" marginheight=\"0\" marginwidth=\"0\" " 
+						+ "width=\"100%\" height=\"100%\" frameborder=\"0\" scrolling=\"no\" marginheight=\"0\" marginwidth=\"0\" " 
 						+ "src=\"https://www.google.sk/maps?f=q&amp;source=s_q&amp;hl=sk&amp;geocode=&amp;q=https:%2F%2Fwww.google.sk%2Fmaps%2Fms%3Fdg%3Dfeature%26ie%3DUTF8%26msa%3D0%26output%3Dkml%26msid%3D205427380680792264646.0004ff657dd83346ccac2&amp;"
 						+ "aq=&amp;sll=48.201337,16.414948&amp;sspn=0.259035,0.676346&amp;ie=UTF8&amp;ll="
 						+  lat +","+ lon +"&amp;spn=0.199536,0.399983&amp;t=m&amp;" 
@@ -138,7 +140,7 @@
 				$("#map")
 				.html(
 						"<iframe id=\"map_frame\" " 
-						+ "width=\"100%\" height=\""+ windowHeight +"px\" frameborder=\"0\" scrolling=\"no\" marginheight=\"0\" marginwidth=\"0\" " 
+						+ "width=\"100%\" height=\"100%\" frameborder=\"0\" scrolling=\"no\" marginheight=\"0\" marginwidth=\"0\" " 
 						+ "src=\"https://www.google.sk/maps?f=q&amp;source=s_q&amp;hl=sk&amp;geocode=&amp;q=https:%2F%2Fwww.google.sk%2Fmaps%2Fms%3Fdg%3Dfeature%26ie%3DUTF8%26msa%3D0%26output%3Dkml%26msid%3D205427380680792264646.0004ff65776796e8329c3&amp;"
 						+ "aq=&amp;sll=48.201337,16.414948&amp;sspn=0.259035,0.676346&amp;ie=UTF8&amp;ll="
 						+  lat +","+ lon +"&amp;spn=0.199536,0.399983&amp;t=m&amp;" 
