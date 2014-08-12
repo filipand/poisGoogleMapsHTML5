@@ -14,7 +14,7 @@ html,body,#googft-mapCanvas {
 </style>
 
 <script type="text/javascript"
-	src="https://maps.google.com/maps/api/js?sensor=false&key=AIzaSyAk9XHSmk_a3AJ5qf4ryv4uFJn3iBoeIpI&libraries=visualization&amp;v=3"></script>
+	src="https://maps.google.com/maps/api/js?sensor=false&key=AIzaSyAk9XHSmk_a3AJ5qf4ryv4uFJn3iBoeIpI&libraries=visualization,geometry&amp;v=3"></script>
 
 <script src="jquery.js"></script>
 
@@ -24,6 +24,7 @@ html,body,#googft-mapCanvas {
 
 	var myLocation = null;
 	var myLocationMarker = null;
+	var previousLocation = null;
 	var watchId = null;
 	var map_id;
 
@@ -47,6 +48,8 @@ html,body,#googft-mapCanvas {
 		
 		
 		localizeMap();
+		
+		showOverlayInRadius(null, 50);
 
 		getLocation();
 
@@ -63,12 +66,12 @@ html,body,#googft-mapCanvas {
 			var optn = {
 				enableHighAccuracy : true,
 				timeout : 10000,
-				maximumAge : 10000
+				maximumAge : 3000
 			};
 			watchId = navigator.geolocation.watchPosition(showPosition,
 					showError, optn);
 		} else {
-			showOverlayInRadius(null, null, 50);
+			showOverlayInRadius(null, 50);
 			alert('Geolocation is not supported in your browser');
 		}
 	}
@@ -80,9 +83,11 @@ html,body,#googft-mapCanvas {
 	}
 
 	function showPosition(position) {
+		
 
 		myLocation = new google.maps.LatLng(position.coords.latitude,
 				position.coords.longitude);
+		
 
 		var latitude = position.coords.latitude;
 		var longitude = position.coords.longitude;
@@ -92,36 +97,66 @@ html,body,#googft-mapCanvas {
 			map.setZoom(17);
 		}
 
-		if (myLocationMarker != null) {
-			myLocationMarker.setMap(null);
-		}
+		hideLocationMarker();
+		
+		displayMyLocationMarker();
+		
+		console.log('my location '+myLocation);
+		
+		showOverlayInRadius(myLocation, 500);
+		
+		initializeGetDirections(myLocation);
 
+	}
+	
+	function displayMyLocationMarker() {
+		
 		myLocationMarker = new google.maps.Marker({
 			position : myLocation,
 			map : map,
 			icon : 'mylocation_icon.png'
 		});
-
-		showOverlayInRadius(latitude, longitude, 500);
 		
-		initializeGetDirections(latitude, longitude);
-
+	}
+	
+	function hideLocationMarker() {
+		if (myLocationMarker != null) {
+			myLocationMarker.setMap(null);
+		}
 	}
 	
 	
-	function showOverlayInRadius(myLat, myLng, radius) {
-
-		var where_clause = "";
-
-		if (myLat != null) {
-			where_clause = queryPointsWithinDistance(myLat, myLng, 500);
+	function showOverlayInRadius(location, radius) {
+		
+		var where_clause = '';
+		
+		if(location != null) {
+			
+			var myLat = location.lat();
+			var myLng = location.lng();
+			
+			where_clause = queryPointsWithinDistance(myLat, myLng, radius);
+			
+			if(previousLocation != null) {
+				console.log(calcDistance(previousLocation, location) + ' <=> ' +  radius/5 );
+				
+				if(calcDistance(previousLocation, location) < radius/5) {
+					return;	
+				}	
+			}
+			
+			previousLocation = location;
 		}
+		
+		
 
 		
 		if (map_layer != null) {
 			map_layer.setMap(null);
 		}
 
+		console.log('refreshing overlay');
+		
 		map_layer = new google.maps.FusionTablesLayer({
 			map : map,
 			heatmap : {
@@ -138,6 +173,10 @@ html,body,#googft-mapCanvas {
 			}
 		});
 
+	}
+	
+	function calcDistance(p1, p2) {//in km
+		  return (google.maps.geometry.spherical.computeDistanceBetween(p1, p2) / 1000).toFixed(2);
 	}
 	
 	
@@ -164,34 +203,43 @@ html,body,#googft-mapCanvas {
 
 	}
 	
-	function initializeGetDirections(latitude, longitude){
+	function initializeGetDirections(location) {
 		
-		var lat = latitude;
-		var lng = longitude;
-		if(lat != null){
-			lat = lat + ',';
-		}
-		else{
-			lat = '';
-			lng = '';
+		var lat = '';
+		var lng = '';
+		if(location != null) {
+			lat = location.lat() + ',';
+			lng = location.lng();
 		}
 		
+	
 		var timer = setInterval(function(){
 			
-			jQuery('a[href*="_lati_"]').each(function(){
-				if (this._repl) return false;
+			$( ".directions" ).click(function() {
+				console.log('directions click');
 				var href = $(this).attr('href').replace('_lati_', lat).replace('_long_', lng);
 				$(this).attr('href', href);
-				this._repl = true;
 			});
+			
 		}, 300);
+		
+		
+		
+// 		var timer = setInterval(function(){
+			
+// 			jQuery('a[href*="_lati_"]').each(function(){
+// 				if (this._repl) return false;
+// 				var href = $(this).attr('href').replace('_lati_', lat).replace('_long_', lng);
+// 				$(this).attr('href', href);
+// 				this._repl = true;
+// 			});
+// 		}, 300);
 
 	}
 
 	function showError(error) {
 		
-		showOverlayInRadius(null, null, 50);
-		initializeGetDirections(null, null);
+		initializeGetDirections(null);
 		
 		switch (error.code) {
 		case error.PERMISSION_DENIED:
@@ -207,6 +255,7 @@ html,body,#googft-mapCanvas {
 			alert("An unknown error occurred.");
 			break;
 		}
+		
 	}
 	
 function localizeMap(){
