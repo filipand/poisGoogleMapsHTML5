@@ -27,6 +27,8 @@ html,body,#googft-mapCanvas {
 	var previousLocation = null;
 	var watchId = null;
 	var map_id;
+	
+	var lastError = null;
 
 	function initialize() {
 		
@@ -50,6 +52,8 @@ html,body,#googft-mapCanvas {
 		localizeMap();
 		
 		showOverlayInRadius(null, 50);
+		
+		initializeGetDirections();
 
 		getLocation();
 
@@ -72,7 +76,10 @@ html,body,#googft-mapCanvas {
 					showError, optn);
 		} else {
 			showOverlayInRadius(null, 50);
-			alert('Geolocation is not supported in your browser');
+			if(lastError != 1){
+				alert('Geolocation is not supported in your browser');	
+			}
+			lastError = 1;
 		}
 	}
 	function stopWatch() {
@@ -84,7 +91,8 @@ html,body,#googft-mapCanvas {
 
 	function showPosition(position) {
 		
-
+		lastError = null;
+		
 		myLocation = new google.maps.LatLng(position.coords.latitude,
 				position.coords.longitude);
 		
@@ -96,6 +104,8 @@ html,body,#googft-mapCanvas {
 			map.setCenter(myLocation);
 			map.setZoom(17);
 		}
+		
+		
 
 		hideLocationMarker();
 		
@@ -104,8 +114,6 @@ html,body,#googft-mapCanvas {
 		console.log('my location '+myLocation);
 		
 		showOverlayInRadius(myLocation, 500);
-		
-		initializeGetDirections(myLocation);
 
 	}
 	
@@ -138,7 +146,7 @@ html,body,#googft-mapCanvas {
 			where_clause = queryPointsWithinDistance(myLat, myLng, radius);
 			
 			if(previousLocation != null) {
-				console.log(calcDistance(previousLocation, location) + ' <=> ' +  radius/5 );
+				console.log(calcDistance(previousLocation, location) + ' <=> ' + radius/5 );
 				
 				if(calcDistance(previousLocation, location) < radius/5) {
 					return;	
@@ -148,8 +156,6 @@ html,body,#googft-mapCanvas {
 			previousLocation = location;
 		}
 		
-		
-
 		
 		if (map_layer != null) {
 			map_layer.setMap(null);
@@ -203,20 +209,18 @@ html,body,#googft-mapCanvas {
 
 	}
 	
-	function initializeGetDirections(location) {
-		
-		var lat = '';
-		var lng = '';
-		if(location != null) {
-			lat = location.lat() + ',';
-			lng = location.lng();
-		}
-		
+	function initializeGetDirections() {
 	
 		var timer = setInterval(function(){
-			
 			$( ".directions" ).click(function() {
-				console.log('directions click');
+				
+				var lat = '';
+				var lng = '';
+				if(myLocation != null) {
+					lat = myLocation.lat() + ',';
+					lng = myLocation.lng();
+				}
+				
 				var href = $(this).attr('href').replace('_lati_', lat).replace('_long_', lng);
 				$(this).attr('href', href);
 			});
@@ -239,20 +243,30 @@ html,body,#googft-mapCanvas {
 
 	function showError(error) {
 		
-		initializeGetDirections(null);
-		
 		switch (error.code) {
 		case error.PERMISSION_DENIED:
-			alert("User denied the request for Geolocation.");
+			if(lastError != 2) {
+				alert("User denied the request for Geolocation.");	
+			}
+			lastError = 2;
 			break;
 		case error.POSITION_UNAVAILABLE:
-			alert("Location information is unavailable.");
+			if(lastError != 3) {
+				alert("Location information is unavailable.");	
+			}
+			lastError = 3;
 			break;
 		case error.TIMEOUT:
-			alert("The request to get user location timed out.");
+			if(lastError != 4) {
+				alert("The request to get user location timed out.");	
+			}
+			lastError = 4;
 			break;
 		case error.UNKNOWN_ERROR:
-			alert("An unknown error occurred.");
+			if(lastError != 5) {
+				alert("An unknown error occurred.");	
+			}
+			lastError = 5;
 			break;
 		}
 		
